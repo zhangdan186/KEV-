@@ -21,12 +21,19 @@ except ImportError as exc:  # pragma: no cover
     raise SystemExit("Install dependencies with: pip install -r requirements.txt") from exc
 
 from kev_analysis.cleaner import prepare_kev_dataframe
-from kev_analysis.cwe_analysis import analyze_cwe
 from kev_analysis.errors import KevError
+from kev_analysis.gui_service import (
+    make_filtered_monthly_figure,
+    make_filtered_vendor_figure,
+    summarize_filtered_cwe,
+    summarize_filtered_monthly,
+    summarize_filtered_vendors,
+)
 from kev_analysis.loader import load_kev_json
 from kev_analysis.models import ExtendedKevFilter
 from kev_analysis.query import filter_kev_extended
 from kev_analysis.validator import validate_raw_kev
+from kev_analysis.visualization import make_cwe_top_figure
 
 
 def _figure_to_png(fig: Any) -> bytes:
@@ -42,54 +49,17 @@ def _result_to_csv(df: pd.DataFrame) -> bytes:
         exported["cwes"] = exported["cwes"].map(
             lambda values: json.dumps(values, ensure_ascii=False, separators=(",", ":"))
         )
-    return exported.to_csv(index=False, encoding="utf-8-sig", date_format="%Y-%m-%d").encode(
-        "utf-8-sig"
-    )
+    csv_text = exported.to_csv(index=False, date_format="%Y-%m-%d")
+    return csv_text.encode("utf-8-sig")
 
 
-def _monthly_figure(df: pd.DataFrame) -> Any:
-    monthly = (
-        df.groupby("added_month", as_index=False)
-        .size()
-        .rename(columns={"size": "record_count"})
-        .sort_values("added_month", kind="mergesort")
-    )
-    fig, ax = plt.subplots(figsize=(11, 4.8))
-    if monthly.empty:
-        ax.text(0.5, 0.5, "当前筛选无记录", ha="center", va="center", transform=ax.transAxes)
-        ax.set_axis_off()
-    else:
-        ax.plot(monthly["added_month"], monthly["record_count"], marker="o", markersize=3)
-        ax.set_title("筛选结果：按月加入KEV的记录数")
-        ax.set_xlabel("月份")
-        ax.set_ylabel("记录数")
-        ax.tick_params(axis="x", rotation=60)
-        ax.grid(alpha=0.25)
-    fig.tight_layout()
-    return fig
-
-
-def _vendor_figure(df: pd.DataFrame, top_n: int = 10) -> Any:
-    vendor = (
-        df.groupby("vendor_clean", as_index=False)["cveID"]
-        .nunique()
-        .rename(columns={"cveID": "record_count"})
-        .sort_values(["record_count", "vendor_clean"], ascending=[False, True], kind="mergesort")
-        .head(top_n)
-        .iloc[::-1]
-    )
-    fig, ax = plt.subplots(figsize=(10, 5.2))
-    if vendor.empty:
-        ax.text(0.5, 0.5, "当前筛选无记录", ha="center", va="center", transform=ax.transAxes)
-        ax.set_axis_off()
-    else:
-        ax.barh(vendor["vendor_clean"], vendor["record_count"])
-        ax.set_title(f"筛选结果：厂商Top {min(top_n, len(vendor))}")
-        ax.set_xlabel("不同CVE数量")
-        ax.set_ylabel("厂商")
-        ax.grid(axis="x", alpha=0.25)
-    fig.tight_layout()
-    return fig
+def _reset_filters() -> None:
+    st.session_state["use_date"] = False
+    st.session_state["vendor_filter"] = ""
+    st.session_state["product_filter"] = ""
+    st.session_state["ransomware_filter"] = "全部"
+    st.session_state["cwe_filter"] = ""
+    st.session_state.pop("date_range", None)
 
 
 st.set_page_config(page_title="CISA KEV 分析工具", page_icon="🛡️", layout="wide")
@@ -135,25 +105,35 @@ minimum_date = prepared_df["dateAdded"].min().date()
 maximum_date = prepared_df["dateAdded"].max().date()
 
 st.sidebar.subheader("组合筛选")
-use_date = st.sidebar.checkbox("启用日期范围", value=False)
+use_date = st.sidebar.checkbox("启用日期范围", value=False, key="use_date")
 if use_date:
     date_range = st.sidebar.date_input(
         "dateAdded闭区间",
         value=(minimum_date, maximum_date),
         min_value=minimum_date,
         max_value=maximum_date,
+        key="date_range",
     )
-    if isinstance(date_range, tuple) and len(date_range) == 2:
+    if isinstance(date_range, (tuple, list)) and len(date_range) == 2:
         start_date, end_date = date_range
     else:
         start_date = end_date = None
 else:
     start_date = end_date = None
 
-vendor = st.sidebar.text_input("厂商/项目关键词")
-product = st.sidebar.text_input("产品关键词")
-ransomware_label = st.sidebar.selectbox("勒索软件确认状态", ["全部", "Known", "Unknown"])
-cwe = st.sidebar.text_input("CWE编号（如 CWE-79）")
+vendor = st.sidebar.text_input("厂商/项目关键词", key="vendor_filter")
+product = st.sidebar.text_input("产品关键词", key="product_filter")
+ransomware_label = st.sidebar.selectbox(
+    "勒索软件确认状态",
+    ["全部", "Known", "Unknown"],
+    key="ransomware_filter",
+)
+cwe = st.sidebar.text_input("CWE编号（如 CWE-79）", key="cwe_filter")
+st.sidebar.button(
+    "重置筛选",
+    on_click=_reset_filters,
+    use_container_width=True,
+)
 
 filters = ExtendedKevFilter(
     start_date=str(start_date) if start_date is not None else None,
@@ -184,13 +164,21 @@ chart_tab, table_tab, detail_tab, validation_tab = st.tabs(
 )
 
 with chart_tab:
-    chart_name = st.radio("选择图表", ["月度新增", "厂商Top 10", "CWE Top 20"], horizontal=True)
+    chart_name = st.radio(
+        "选择图表",
+        ["月度新增", "厂商Top 10", "CWE Top 20"],
+        horizontal=True,
+    )
     if chart_name == "月度新增":
-        chart = _monthly_figure(result)
+        monthly_counts = summarize_filtered_monthly(result)
+        chart = make_filtered_monthly_figure(monthly_counts)
     elif chart_name == "厂商Top 10":
-        chart = _vendor_figure(result)
+        vendor_summary = summarize_filtered_vendors(result)
+        chart = make_filtered_vendor_figure(vendor_summary, top_n=10)
     else:
-        chart = analyze_cwe(result).figures["cwe_top20"]
+        cwe_summary = summarize_filtered_cwe(result)
+        chart = make_cwe_top_figure(cwe_summary, top_n=20)
+
     st.pyplot(chart, use_container_width=True)
     st.download_button(
         "下载当前图表PNG",
