@@ -1,0 +1,34 @@
+roles:
+  member_1:
+    title: 项目负责人 / 数据底座与质量保障
+    owns:
+      - src/kev_analysis/loader.py
+      - src/kev_analysis/validator.py
+      - src/kev_analysis/cleaner.py
+      - src/kev_analysis/exporters.py
+      - src/kev_analysis/pipeline.py
+      - tests/
+      - README.md
+      - report/overall-integration
+  member_2:
+    title: 统计分析与机器学习负责人
+    owns:
+      - src/kev_analysis/time_analysis.py
+      - src/kev_analysis/deadline_analysis.py
+      - src/kev_analysis/ransomware_analysis.py
+      - src/kev_analysis/vendor_analysis.py
+      - src/kev_analysis/ml_analysis.py
+      - report/statistical-analysis
+  member_3:
+    title: CWE、查询与GUI负责人
+    owns:
+      - src/kev_analysis/cwe_analysis.py
+      - src/kev_analysis/query.py
+      - src/kev_analysis/visualization.py
+      - app.py
+      - report/cwe-query-gui
+      - ppt/visual-integration
+review_rules:
+  public_contract_change: all_three
+  module_code_change: owner_plus_one_reviewer
+  report_or_ppt_change: author_plus_integrator

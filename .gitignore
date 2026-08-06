@@ -1,0 +1,26 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+.env
+.idea/
+.vscode/
+.DS_Store
+
+# 原始数据不提交，除非课程明确要求
+/data/*.json
+!/data/README.md
+!/data/.gitkeep
+
+# 运行产物不进入代码提交
+/outputs/**/*
+!/outputs/**/.gitkeep
+!/outputs/README.md
+/screenshots/*.png
+
+# 报告与PPT最终导出文件可由组内另行管理
+/report/*.pdf
+/ppt/*.pptx

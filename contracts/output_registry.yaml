@@ -1,0 +1,252 @@
+contract_version: 1.0.0
+common:
+  csv_encoding: utf-8-sig
+  float_format: "%.8f"
+  date_format: "%Y-%m-%d"
+  index: false
+
+artifacts:
+  metadata:
+    path: validation/metadata.json
+    format: json
+    required: true
+
+  validation_summary:
+    path: validation/validation_summary.csv
+    format: csv
+    required: true
+    columns: [check_id, check_name, severity, passed, actual, expected, message]
+    sort: [check_id ASC]
+
+  validation_details:
+    path: validation/validation_details.csv
+    format: csv
+    required: true
+    columns: [issue_code, severity, row_index, cveID, field, observed_value, message]
+    sort: [severity DESC, issue_code ASC, row_index ASC]
+
+  field_profile:
+    path: validation/field_profile.csv
+    format: csv
+    required: true
+    columns: [field, dtype, row_count, non_null_count, null_count, empty_string_count, unique_count]
+    sort: [field ASC]
+
+  kev_prepared:
+    path: prepared/kev_prepared.csv
+    format: csv
+    required: true
+    columns:
+      [cveID, vendorProject, product, vulnerabilityName, dateAdded,
+       shortDescription, requiredAction, dueDate,
+       knownRansomwareCampaignUse, notes, cwes,
+       vendor_clean, product_clean, added_year, added_month,
+       deadline_days, has_cwe, cwe_count]
+    sort: [dateAdded ASC, cveID ASC]
+    serialization:
+      cwes: compact_json_array
+
+  monthly_added_counts:
+    path: tables/monthly_added_counts.csv
+    format: csv
+    required: true
+    columns: [added_month, record_count]
+    sort: [added_month ASC]
+
+  annual_added_summary:
+    path: tables/annual_added_summary.csv
+    format: csv
+    required: true
+    columns: [added_year, record_count, first_month, last_month, covered_months, is_complete_year]
+    sort: [added_year ASC]
+
+  same_period_comparison:
+    path: tables/same_period_comparison.csv
+    format: csv
+    required: true
+    columns: [added_year, period_start_month, period_end_month, record_count]
+    sort: [added_year ASC]
+
+  deadline_descriptive:
+    path: tables/deadline_descriptive.csv
+    format: csv
+    required: true
+    columns: [metric, value]
+    sort: [metric_order ASC]
+    hidden_sort_columns: [metric_order]
+
+  deadline_frequency:
+    path: tables/deadline_frequency.csv
+    format: csv
+    required: true
+    columns: [deadline_days, record_count, share]
+    sort: [deadline_days ASC]
+
+  deadline_by_year:
+    path: tables/deadline_by_year.csv
+    format: csv
+    required: true
+    columns: [added_year, record_count, min_days, q1_days, median_days, mean_days, q3_days, max_days]
+    sort: [added_year ASC]
+
+  ransomware_summary:
+    path: tables/ransomware_summary.csv
+    format: csv
+    required: true
+    columns: [status, record_count, share]
+    sort: [status_order ASC]
+    hidden_sort_columns: [status_order]
+
+  ransomware_by_year:
+    path: tables/ransomware_by_year.csv
+    format: csv
+    required: true
+    columns: [added_year, known_count, unknown_count, total_count, known_share, unknown_share]
+    sort: [added_year ASC]
+
+  vendor_summary:
+    path: tables/vendor_summary.csv
+    format: csv
+    required: true
+    columns: [vendor_clean, record_count, share, cumulative_share, product_count]
+    sort: [record_count DESC, vendor_clean ASC]
+
+  vendor_product_summary:
+    path: tables/vendor_product_summary.csv
+    format: csv
+    required: true
+    columns: [vendor_clean, product_clean, record_count, share]
+    sort: [record_count DESC, vendor_clean ASC, product_clean ASC]
+
+  vendor_product_top30:
+    path: tables/vendor_product_top30.csv
+    format: csv
+    required: true
+    columns: [rank, vendor_clean, product_clean, record_count, share]
+    sort: [rank ASC]
+
+  concentration_metrics:
+    path: tables/concentration_metrics.csv
+    format: csv
+    required: true
+    columns: [metric, value, interpretation_scope]
+    sort: [metric_order ASC]
+    hidden_sort_columns: [metric_order]
+
+  cve_cwe_long:
+    path: tables/cve_cwe_long.csv
+    format: csv
+    required: true
+    columns: [cveID, cwe, knownRansomwareCampaignUse, dateAdded, vendor_clean, product_clean]
+    sort: [cveID ASC, cwe ASC]
+
+  cwe_overall_summary:
+    path: tables/cwe_overall_summary.csv
+    format: csv
+    required: true
+    columns: [cwe, distinct_cve_count, denominator, share]
+    sort: [distinct_cve_count DESC, cwe ASC]
+
+  cwe_known_summary:
+    path: tables/cwe_known_summary.csv
+    format: csv
+    required: true
+    columns: [cwe, distinct_cve_count, denominator, known_share]
+    sort: [distinct_cve_count DESC, cwe ASC]
+
+  cwe_unknown_summary:
+    path: tables/cwe_unknown_summary.csv
+    format: csv
+    required: true
+    columns: [cwe, distinct_cve_count, denominator, unknown_share]
+    sort: [distinct_cve_count DESC, cwe ASC]
+
+  query_cases_summary:
+    path: queries/query_cases_summary.csv
+    format: csv
+    required: true
+    columns:
+      [case_id, start_date, end_date, vendor, ransomware, cwe,
+       record_count, vendor_count, max_date, known_count, output_file]
+    sort: [case_id ASC]
+
+  query_case:
+    path_pattern: queries/query_case_{case_id}.csv
+    format: csv
+    required_count_min: 3
+    columns:
+      [cveID, vendorProject, product, vulnerabilityName, dateAdded,
+       shortDescription, requiredAction, dueDate,
+       knownRansomwareCampaignUse, notes, cwes,
+       vendor_clean, product_clean, added_year, added_month,
+       deadline_days, has_cwe, cwe_count]
+    sort: [dateAdded DESC, cveID ASC]
+
+  ml_cluster_results:
+    path: ml/ml_cluster_results.csv
+    format: csv
+    required_when: ml.enabled
+    columns: [cveID, cluster_id, distance_to_centroid, vulnerabilityName, vendor_clean, knownRansomwareCampaignUse]
+    sort: [cluster_id ASC, distance_to_centroid ASC, cveID ASC]
+
+  ml_cluster_selection:
+    path: ml/ml_cluster_selection.csv
+    format: csv
+    required_when: ml.enabled
+    columns: [k, silhouette_score, inertia, selected]
+    sort: [k ASC]
+
+  ml_cluster_summary:
+    path: ml/ml_cluster_summary.csv
+    format: csv
+    required_when: ml.enabled
+    columns: [cluster_id, record_count, share, known_count, known_share, representative_cve]
+    sort: [cluster_id ASC]
+
+  ml_cluster_keywords:
+    path: ml/ml_cluster_keywords.csv
+    format: csv
+    required_when: ml.enabled
+    columns: [cluster_id, keyword_rank, keyword, tfidf_weight]
+    sort: [cluster_id ASC, keyword_rank ASC]
+
+  monthly_added_trend_figure:
+    path: figures/monthly_added_trend.png
+    format: png
+    required: true
+  deadline_distribution_figure:
+    path: figures/deadline_distribution.png
+    format: png
+    required: true
+  ransomware_by_year_figure:
+    path: figures/ransomware_by_year.png
+    format: png
+    required: true
+  vendor_top15_figure:
+    path: figures/vendor_top15.png
+    format: png
+    required: true
+  vendor_cumulative_share_figure:
+    path: figures/vendor_cumulative_share.png
+    format: png
+    required: true
+  cwe_top20_figure:
+    path: figures/cwe_top20.png
+    format: png
+    required: true
+  cwe_known_unknown_figure:
+    path: figures/cwe_known_unknown.png
+    format: png
+    required: true
+  ml_clusters_figure:
+    path: ml/ml_clusters.png
+    format: png
+    required_when: ml.enabled
+  vendor_product_treemap:
+    path: html/vendor_product_treemap.html
+    format: html
+    required: true
+  run_manifest:
+    path: manifests/run_manifest.json
+    format: json
+    required: true

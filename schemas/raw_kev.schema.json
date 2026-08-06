@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "schemas/raw_kev.schema.json",
+  "title": "CISA KEV course snapshot",
+  "type": "object",
+  "required": [
+    "title",
+    "catalogVersion",
+    "dateReleased",
+    "count",
+    "vulnerabilities"
+  ],
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "catalogVersion": {
+      "type": "string"
+    },
+    "dateReleased": {
+      "type": "string"
+    },
+    "count": {
+      "type": "integer",
+      "const": 1656
+    },
+    "vulnerabilities": {
+      "type": "array",
+      "minItems": 1656,
+      "maxItems": 1656,
+      "items": {
+        "$ref": "#/$defs/vulnerability"
+      }
+    }
+  },
+  "additionalProperties": true,
+  "$defs": {
+    "vulnerability": {
+      "type": "object",
+      "required": [
+        "cveID",
+        "vendorProject",
+        "product",
+        "vulnerabilityName",
+        "dateAdded",
+        "shortDescription",
+        "requiredAction",
+        "dueDate",
+        "knownRansomwareCampaignUse",
+        "notes",
+        "cwes"
+      ],
+      "properties": {
+        "cveID": {
+          "type": "string",
+          "pattern": "^CVE-[0-9]{4}-[0-9]{4,19}$"
+        },
+        "vendorProject": {
+          "type": "string",
+          "minLength": 1
+        },
+        "product": {
+          "type": "string",
+          "minLength": 1
+        },
+        "vulnerabilityName": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dateAdded": {
+          "type": "string",
+          "format": "date"
+        },
+        "shortDescription": {
+          "type": "string",
+          "minLength": 1
+        },
+        "requiredAction": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dueDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "knownRansomwareCampaignUse": {
+          "enum": [
+            "Known",
+            "Unknown"
+          ]
+        },
+        "notes": {
+          "type": "string"
+        },
+        "cwes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^CWE-[0-9]+$"
+          },
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,41 @@
+project:
+  name: kev-analysis-course-project
+  contract_version: 1.0.0
+  random_seed: 20260806
+
+input:
+  raw_json: data/CISA_KEV_2026-07-29.json
+  encoding: utf-8
+
+output:
+  root: outputs
+  csv_encoding: utf-8-sig
+  csv_float_format: "%.8f"
+  csv_date_format: "%Y-%m-%d"
+  figure_dpi: 300
+  figure_format: png
+  overwrite_existing: true
+  create_run_manifest: true
+
+analysis:
+  monthly_start: "2021-11"
+  monthly_end: "2026-07"
+  incomplete_years: [2021, 2026]
+  cwe_denominator_all: 1485
+  cwe_denominator_known: 294
+  cwe_denominator_unknown: 1191
+  top_vendor_count: 15
+  top_vendor_product_count: 30
+  top_cwe_count: 20
+
+ml:
+  enabled: true
+  candidate_k: [4, 5, 6, 7, 8]
+  max_features: 5000
+  min_df: 2
+  max_df: 0.95
+  random_state: 20260806
+
+logging:
+  level: INFO
+  file: outputs/logs/pipeline.log

@@ -1,0 +1,305 @@
+{
+  "file_count": 75,
+  "files": [
+    {
+      "path": ".editorconfig",
+      "bytes": 238
+    },
+    {
+      "path": ".github/pull_request_template.md",
+      "bytes": 332
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 402
+    },
+    {
+      "path": "CHANGELOG.md",
+      "bytes": 310
+    },
+    {
+      "path": "FREEZE_LOCK.json",
+      "bytes": 6354
+    },
+    {
+      "path": "FREEZE_MANIFEST.md",
+      "bytes": 1878
+    },
+    {
+      "path": "README.md",
+      "bytes": 1662
+    },
+    {
+      "path": "app.py",
+      "bytes": 625
+    },
+    {
+      "path": "config/default.yaml",
+      "bytes": 807
+    },
+    {
+      "path": "contracts/output_registry.yaml",
+      "bytes": 7310
+    },
+    {
+      "path": "contracts/owners.yaml",
+      "bytes": 1060
+    },
+    {
+      "path": "data/.gitkeep",
+      "bytes": 0
+    },
+    {
+      "path": "data/README.md",
+      "bytes": 188
+    },
+    {
+      "path": "docs/adr/ADR-001-preserve-raw-fields.md",
+      "bytes": 397
+    },
+    {
+      "path": "docs/adr/ADR-002-query-core-and-gui-extension.md",
+      "bytes": 406
+    },
+    {
+      "path": "docs/adr/ADR-003-output-registry.md",
+      "bytes": 373
+    },
+    {
+      "path": "docs/architecture.md",
+      "bytes": 1955
+    },
+    {
+      "path": "docs/checklists/development-start-checklist.md",
+      "bytes": 576
+    },
+    {
+      "path": "docs/checklists/final-delivery-checklist.md",
+      "bytes": 951
+    },
+    {
+      "path": "docs/collaboration-and-change-control.md",
+      "bytes": 1701
+    },
+    {
+      "path": "docs/data-contract.md",
+      "bytes": 3710
+    },
+    {
+      "path": "docs/error-contract.md",
+      "bytes": 2856
+    },
+    {
+      "path": "docs/interface-contract.md",
+      "bytes": 5197
+    },
+    {
+      "path": "docs/member-work-packages.md",
+      "bytes": 922
+    },
+    {
+      "path": "docs/output-contract.md",
+      "bytes": 2325
+    },
+    {
+      "path": "docs/report-ppt-delivery-plan.md",
+      "bytes": 1621
+    },
+    {
+      "path": "docs/requirements-traceability.md",
+      "bytes": 2653
+    },
+    {
+      "path": "docs/semantic-and-ethics-boundaries.md",
+      "bytes": 777
+    },
+    {
+      "path": "docs/templates/change-request.md",
+      "bytes": 355
+    },
+    {
+      "path": "docs/testing-and-quality-gates.md",
+      "bytes": 2568
+    },
+    {
+      "path": "main.py",
+      "bytes": 1167
+    },
+    {
+      "path": "outputs/README.md",
+      "bytes": 136
+    },
+    {
+      "path": "outputs/figures/.gitkeep",
+      "bytes": 0
+    },
+    {
+      "path": "outputs/html/.gitkeep",
+      "bytes": 0
+    },
+    {
+      "path": "outputs/logs/.gitkeep",
+      "bytes": 0
+    },
+    {
+      "path": "outputs/manifests/.gitkeep",
+      "bytes": 0
+    },
+    {
+      "path": "outputs/ml/.gitkeep",
+      "bytes": 0
+    },
+    {
+      "path": "outputs/prepared/.gitkeep",
+      "bytes": 0
+    },
+    {
+      "path": "outputs/queries/.gitkeep",
+      "bytes": 0
+    },
+    {
+      "path": "outputs/tables/.gitkeep",
+      "bytes": 0
+    },
+    {
+      "path": "outputs/validation/.gitkeep",
+      "bytes": 0
+    },
+    {
+      "path": "ppt/PPT_OUTLINE.md",
+      "bytes": 149
+    },
+    {
+      "path": "pyproject.toml",
+      "bytes": 800
+    },
+    {
+      "path": "report/REPORT_OUTLINE.md",
+      "bytes": 156
+    },
+    {
+      "path": "requirements.txt",
+      "bytes": 226
+    },
+    {
+      "path": "schemas/prepared_kev_row.schema.json",
+      "bytes": 1825
+    },
+    {
+      "path": "schemas/raw_kev.schema.json",
+      "bytes": 2245
+    },
+    {
+      "path": "screenshots/.gitkeep",
+      "bytes": 0
+    },
+    {
+      "path": "scripts/bootstrap.ps1",
+      "bytes": 208
+    },
+    {
+      "path": "scripts/bootstrap.sh",
+      "bytes": 212
+    },
+    {
+      "path": "scripts/check.ps1",
+      "bytes": 163
+    },
+    {
+      "path": "scripts/check.sh",
+      "bytes": 169
+    },
+    {
+      "path": "scripts/verify_freeze.py",
+      "bytes": 1080
+    },
+    {
+      "path": "src/kev_analysis/__init__.py",
+      "bytes": 122
+    },
+    {
+      "path": "src/kev_analysis/cleaner.py",
+      "bytes": 280
+    },
+    {
+      "path": "src/kev_analysis/constants.py",
+      "bytes": 1356
+    },
+    {
+      "path": "src/kev_analysis/cwe_analysis.py",
+      "bytes": 526
+    },
+    {
+      "path": "src/kev_analysis/deadline_analysis.py",
+      "bytes": 316
+    },
+    {
+      "path": "src/kev_analysis/errors.py",
+      "bytes": 1197
+    },
+    {
+      "path": "src/kev_analysis/exporters.py",
+      "bytes": 900
+    },
+    {
+      "path": "src/kev_analysis/loader.py",
+      "bytes": 440
+    },
+    {
+      "path": "src/kev_analysis/ml_analysis.py",
+      "bytes": 408
+    },
+    {
+      "path": "src/kev_analysis/models.py",
+      "bytes": 3129
+    },
+    {
+      "path": "src/kev_analysis/pipeline.py",
+      "bytes": 271
+    },
+    {
+      "path": "src/kev_analysis/query.py",
+      "bytes": 874
+    },
+    {
+      "path": "src/kev_analysis/ransomware_analysis.py",
+      "bytes": 335
+    },
+    {
+      "path": "src/kev_analysis/time_analysis.py",
+      "bytes": 335
+    },
+    {
+      "path": "src/kev_analysis/validator.py",
+      "bytes": 352
+    },
+    {
+      "path": "src/kev_analysis/vendor_analysis.py",
+      "bytes": 323
+    },
+    {
+      "path": "src/kev_analysis/visualization.py",
+      "bytes": 722
+    },
+    {
+      "path": "tests/TODO_DOMAIN_TESTS.md",
+      "bytes": 382
+    },
+    {
+      "path": "tests/test_document_consistency.py",
+      "bytes": 719
+    },
+    {
+      "path": "tests/test_frozen_constants.py",
+      "bytes": 1197
+    },
+    {
+      "path": "tests/test_interface_signatures.py",
+      "bytes": 1010
+    },
+    {
+      "path": "tests/test_output_registry.py",
+      "bytes": 1023
+    }
+  ]
+}
