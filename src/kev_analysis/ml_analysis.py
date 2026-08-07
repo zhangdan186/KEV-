@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from matplotlib.figure import Figure
+from numpy.typing import NDArray
 from sklearn.cluster import KMeans  # type: ignore[import-untyped]
 from sklearn.decomposition import TruncatedSVD  # type: ignore[import-untyped]
 from sklearn.feature_extraction.text import TfidfVectorizer  # type: ignore[import-untyped]
@@ -212,7 +213,9 @@ def _validate_candidate_k(candidate_k: tuple[int, ...], record_count: int) -> tu
     return candidates
 
 
-def _make_cluster_figure(coordinates: np.ndarray, labels: np.ndarray) -> Figure:
+def _make_cluster_figure(
+    coordinates: NDArray[np.float64], labels: NDArray[np.int64]
+) -> Figure:
     figure, axis = plt.subplots(figsize=(9, 6.5))
     scatter = axis.scatter(
         coordinates[:, 0],
