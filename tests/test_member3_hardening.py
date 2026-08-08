@@ -7,8 +7,8 @@ import pytest
 from kev_analysis.constants import CWE_DENOMINATORS, PREPARED_FIELDS
 from kev_analysis.cwe_analysis import analyze_cwe, build_cwe_long_table
 from kev_analysis.errors import KevRecordSchemaError, MissingPreparedColumnError
-from kev_analysis.query import filter_kev, filter_kev_extended
 from kev_analysis.models import ExtendedKevFilter
+from kev_analysis.query import filter_kev, filter_kev_extended
 from kev_analysis.visualization import make_cwe_known_unknown_figure
 
 

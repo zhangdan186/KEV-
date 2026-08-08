@@ -88,10 +88,8 @@ def _summarize_subset(
     if long_table.empty:
         return pd.DataFrame(columns=columns)
 
-    summary = (
-        long_table.groupby("cwe", as_index=False, sort=False)["cveID"]
-        .nunique()
-        .rename(columns={"cveID": "distinct_cve_count"})
+    summary = long_table.groupby("cwe", as_index=False, sort=False).agg(
+        distinct_cve_count=("cveID", "nunique")
     )
     summary["distinct_cve_count"] = summary["distinct_cve_count"].astype(int)
     summary["denominator"] = int(denominator)

@@ -7,6 +7,10 @@ from io import BytesIO
 from pathlib import Path
 from typing import Any
 
+import matplotlib
+
+matplotlib.use("Agg")
+
 import matplotlib.pyplot as plt
 import pandas as pd
 
@@ -20,20 +24,20 @@ try:
 except ImportError as exc:  # pragma: no cover
     raise SystemExit("Install dependencies with: pip install -r requirements.txt") from exc
 
-from kev_analysis.cleaner import prepare_kev_dataframe
-from kev_analysis.errors import KevError
-from kev_analysis.gui_service import (
+from kev_analysis.cleaner import prepare_kev_dataframe  # noqa: E402
+from kev_analysis.errors import KevError  # noqa: E402
+from kev_analysis.gui_service import (  # noqa: E402
     make_filtered_monthly_figure,
     make_filtered_vendor_figure,
     summarize_filtered_cwe,
     summarize_filtered_monthly,
     summarize_filtered_vendors,
 )
-from kev_analysis.loader import load_kev_json
-from kev_analysis.models import ExtendedKevFilter
-from kev_analysis.query import filter_kev_extended
-from kev_analysis.validator import validate_raw_kev
-from kev_analysis.visualization import make_cwe_top_figure
+from kev_analysis.loader import load_kev_json  # noqa: E402
+from kev_analysis.models import ExtendedKevFilter  # noqa: E402
+from kev_analysis.query import filter_kev_extended  # noqa: E402
+from kev_analysis.validator import validate_raw_kev  # noqa: E402
+from kev_analysis.visualization import make_cwe_top_figure  # noqa: E402
 
 
 def _figure_to_png(fig: Any) -> bytes:
@@ -72,6 +76,7 @@ if uploaded_file is None:
     st.info("请在左侧上传 CISA_KEV_2026-07-29.json。")
     st.stop()
 
+temp_path: Path | None = None
 try:
     with tempfile.NamedTemporaryFile(suffix=".json", delete=False) as temp_file:
         temp_file.write(uploaded_file.getbuffer())
@@ -89,10 +94,8 @@ except (KevError, OSError, ValueError) as exc:
     st.error(f"文件加载失败：{exc}")
     st.stop()
 finally:
-    try:
+    if temp_path is not None:
         temp_path.unlink(missing_ok=True)
-    except NameError:
-        pass
 
 st.success("原始JSON读取、校验和清洗完成。")
 meta_cols = st.columns(4)
@@ -159,8 +162,8 @@ summary_cols[3].metric(
     summary.max_date.strftime("%Y-%m-%d") if summary.max_date is not None else "—",
 )
 
-chart_tab, table_tab, detail_tab, validation_tab = st.tabs(
-    ["动态可视化", "查询结果", "CVE详情", "数据校验"]
+chart_tab, table_tab, detail_tab, validation_tab, ml_tab = st.tabs(
+    ["动态可视化", "查询结果", "CVE详情", "数据校验", "机器学习"]
 )
 
 with chart_tab:
@@ -233,3 +236,45 @@ with validation_tab:
     st.dataframe(validation.summary, use_container_width=True, hide_index=True)
     with st.expander("字段画像"):
         st.dataframe(validation.field_profile, use_container_width=True, hide_index=True)
+
+with ml_tab:
+    ml_root = ROOT / "outputs" / "ml"
+    required_ml_files = {
+        "selection": ml_root / "ml_cluster_selection.csv",
+        "summary": ml_root / "ml_cluster_summary.csv",
+        "keywords": ml_root / "ml_cluster_keywords.csv",
+        "records": ml_root / "ml_cluster_results.csv",
+        "figure": ml_root / "ml_clusters.png",
+    }
+    missing_ml = [path.name for path in required_ml_files.values() if not path.is_file()]
+    if missing_ml:
+        st.info("请先运行 python main.py 生成机器学习正式产物。")
+    else:
+        selection = pd.read_csv(required_ml_files["selection"], encoding="utf-8-sig")
+        cluster_summary = pd.read_csv(required_ml_files["summary"], encoding="utf-8-sig")
+        keywords = pd.read_csv(required_ml_files["keywords"], encoding="utf-8-sig")
+        cluster_records = pd.read_csv(required_ml_files["records"], encoding="utf-8-sig")
+
+        selected_rows = selection.loc[selection["selected"].astype(bool)]
+        selected_k = int(selected_rows["k"].iloc[0]) if not selected_rows.empty else None
+        best_score = (
+            float(selected_rows["silhouette_score"].iloc[0]) if not selected_rows.empty else None
+        )
+        metric_cols = st.columns(3)
+        metric_cols[0].metric("候选聚类数", len(selection))
+        metric_cols[1].metric("选定 k", selected_k if selected_k is not None else "-")
+        metric_cols[2].metric(
+            "轮廓系数",
+            f"{best_score:.4f}" if best_score is not None else "-",
+        )
+
+        st.image(str(required_ml_files["figure"]), use_container_width=True)
+        st.dataframe(cluster_summary, use_container_width=True, hide_index=True)
+
+        cluster_ids = sorted(cluster_summary["cluster_id"].astype(int).tolist())
+        selected_cluster = st.selectbox("查看聚类", cluster_ids)
+        keyword_view = keywords.loc[keywords["cluster_id"].eq(selected_cluster)]
+        record_view = cluster_records.loc[cluster_records["cluster_id"].eq(selected_cluster)]
+        left, right = st.columns([1, 2])
+        left.dataframe(keyword_view, use_container_width=True, hide_index=True)
+        right.dataframe(record_view, use_container_width=True, hide_index=True)

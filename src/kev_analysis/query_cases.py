@@ -62,9 +62,8 @@ def build_default_query_cases(df: pd.DataFrame) -> tuple[QueryCase, QueryCase, Q
         raise KevRecordSchemaError("数据中没有Known记录，无法生成查询案例1")
 
     case1_candidates = (
-        known.groupby(["added_year", "vendor_clean"], as_index=False, sort=False)["cveID"]
-        .nunique()
-        .rename(columns={"cveID": "record_count"})
+        known.groupby(["added_year", "vendor_clean"], as_index=False, sort=False)
+        .agg(record_count=("cveID", "nunique"))
         .sort_values(
             ["record_count", "added_year", "vendor_clean"],
             ascending=[False, True, True],
@@ -81,9 +80,8 @@ def build_default_query_cases(df: pd.DataFrame) -> tuple[QueryCase, QueryCase, Q
         raise KevRecordSchemaError("数据中没有CWE关系，无法生成查询案例2和3")
 
     case2_candidates = (
-        long_table.groupby(["vendor_clean", "cwe"], as_index=False, sort=False)["cveID"]
-        .nunique()
-        .rename(columns={"cveID": "record_count"})
+        long_table.groupby(["vendor_clean", "cwe"], as_index=False, sort=False)
+        .agg(record_count=("cveID", "nunique"))
         .sort_values(
             ["record_count", "vendor_clean", "cwe"],
             ascending=[False, True, True],
@@ -93,18 +91,15 @@ def build_default_query_cases(df: pd.DataFrame) -> tuple[QueryCase, QueryCase, Q
     )
     case2_row = case2_candidates.iloc[0]
 
-    unknown_long = long_table.loc[
-        long_table["knownRansomwareCampaignUse"].eq("Unknown")
-    ].copy(deep=True)
+    unknown_long = long_table.loc[long_table["knownRansomwareCampaignUse"].eq("Unknown")].copy(
+        deep=True
+    )
     if unknown_long.empty:
         raise KevRecordSchemaError("数据中没有Unknown且含CWE的记录，无法生成查询案例3")
-    unknown_long["added_year"] = pd.to_datetime(
-        unknown_long["dateAdded"], errors="raise"
-    ).dt.year
+    unknown_long["added_year"] = pd.to_datetime(unknown_long["dateAdded"], errors="raise").dt.year
     case3_candidates = (
-        unknown_long.groupby(["added_year", "cwe"], as_index=False, sort=False)["cveID"]
-        .nunique()
-        .rename(columns={"cveID": "record_count"})
+        unknown_long.groupby(["added_year", "cwe"], as_index=False, sort=False)
+        .agg(record_count=("cveID", "nunique"))
         .sort_values(
             ["record_count", "added_year", "cwe"],
             ascending=[False, True, True],
@@ -207,9 +202,7 @@ def execute_query_cases(
                 "record_count": summary.record_count,
                 "vendor_count": summary.vendor_count,
                 "max_date": (
-                    None
-                    if summary.max_date is None
-                    else summary.max_date.strftime("%Y-%m-%d")
+                    None if summary.max_date is None else summary.max_date.strftime("%Y-%m-%d")
                 ),
                 "known_count": summary.known_count,
                 "output_file": f"query_case_{case_id}.csv",
