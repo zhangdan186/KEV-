@@ -50,10 +50,9 @@ def analyze_added_time(df: pd.DataFrame) -> TimeAnalysisResult:
         .sort_values("added_year", kind="mergesort")
         .reset_index(drop=True)
     )
-    annual_summary["is_complete_year"] = (
-        annual_summary["covered_months"].eq(12)
-        & ~annual_summary["added_year"].isin(INCOMPLETE_YEARS)
-    )
+    annual_summary["is_complete_year"] = annual_summary["covered_months"].eq(12) & ~annual_summary[
+        "added_year"
+    ].isin(INCOMPLETE_YEARS)
 
     same_period_work = annual_work[
         annual_work["added_year"].ge(month_index.min().year + 1)
@@ -102,8 +101,7 @@ def _make_monthly_figure(monthly_counts: pd.DataFrame) -> Figure:
 
 def _make_annual_figure(annual_summary: pd.DataFrame) -> Figure:
     colors = [
-        "#f59e0b" if not complete else "#2563eb"
-        for complete in annual_summary["is_complete_year"]
+        "#f59e0b" if not complete else "#2563eb" for complete in annual_summary["is_complete_year"]
     ]
     figure, axis = plt.subplots(figsize=(8.5, 5.5))
     bars = axis.bar(

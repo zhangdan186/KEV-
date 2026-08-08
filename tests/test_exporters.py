@@ -7,7 +7,12 @@ import pandas as pd
 import pytest
 
 from kev_analysis.errors import OutputContractError
-from kev_analysis.exporters import export_dataframe, export_json
+from kev_analysis.exporters import (
+    export_dataframe,
+    export_html,
+    export_json,
+    load_output_specs,
+)
 from kev_analysis.models import OutputSpec
 
 
@@ -48,3 +53,16 @@ def test_json_export_is_utf8_and_preserves_non_ascii(tmp_path: Path) -> None:
     )
 
     assert json.loads(path.read_text(encoding="utf-8"))["title"] == "漏洞目录"
+
+
+def test_registry_specs_and_html_export_are_available(tmp_path: Path) -> None:
+    specs = load_output_specs()
+    assert specs["kev_prepared"].columns[0] == "cveID"
+    assert specs["run_manifest"].path == "manifests/run_manifest.json"
+
+    path = export_html(
+        "<html><body>offline</body></html>",
+        specs["vendor_product_treemap"],
+        tmp_path,
+    )
+    assert path.read_text(encoding="utf-8").startswith("<html>")

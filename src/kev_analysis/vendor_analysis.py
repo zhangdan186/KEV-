@@ -57,12 +57,8 @@ def analyze_vendors(df: pd.DataFrame) -> VendorAnalysisResult:
         )
         .reset_index(drop=True)
     )
-    vendor_product_summary["record_count"] = vendor_product_summary["record_count"].astype(
-        "int64"
-    )
-    vendor_product_summary["share"] = (
-        vendor_product_summary["record_count"] / total_records
-    )
+    vendor_product_summary["record_count"] = vendor_product_summary["record_count"].astype("int64")
+    vendor_product_summary["share"] = vendor_product_summary["record_count"] / total_records
 
     vendor_product_top30 = vendor_product_summary.head(30).copy(deep=True)
     vendor_product_top30.insert(0, "rank", range(1, len(vendor_product_top30) + 1))

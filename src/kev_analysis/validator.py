@@ -361,9 +361,12 @@ def validate_raw_kev(metadata: KevMetadata, df: pd.DataFrame) -> ValidationRepor
 
     invalid_cwe_rows = 0
     for index in df.index[cwes_are_lists]:
+        cwe_values = df.at[index, "cwes"]
+        if not isinstance(cwe_values, list):
+            continue
         invalid_values = [
             value
-            for value in df.at[index, "cwes"]
+            for value in cwe_values
             if not isinstance(value, str) or re.fullmatch(CWE_PATTERN, value) is None
         ]
         if invalid_values:

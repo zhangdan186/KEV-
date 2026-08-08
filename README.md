@@ -3,15 +3,62 @@
 - 冻结版本：`1.0.0`
 - 冻结日期：`2026-08-06`
 - 适用数据：`CISA_KEV_2026-07-29.json`
-- 目标：在三人并行开发前冻结字段、函数接口、输出文件、排序规则、错误语义、测试门槛和协作流程。
+- 目标：完成课程第3题的可复现分析流水线、组合查询、GUI和机器学习扩展。
 
-本包只冻结契约和工程骨架，不包含统计模块的最终业务实现。各成员必须在冻结契约内开发，不得自行修改公共字段名、函数签名、输出列、排序规则或比例口径。
+项目已集成三名成员的业务实现。公共字段名、函数签名、输出列、排序规则和比例口径仍以冻结契约为准。
+
+## 安装与数据
+
+建议使用Python 3.11至3.13：
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+```
+
+将课程JSON放在`data/CISA_KEV_2026-07-29.json`。程序只读原文件，不会覆盖或修改它。
+
+## 完整运行
+
+默认执行全部必做分析、三组查询和机器学习扩展：
+
+```powershell
+python main.py
+```
+
+不运行机器学习时：
+
+```powershell
+python main.py --skip-ml
+```
+
+自定义输入和输出目录：
+
+```powershell
+python main.py --input data/CISA_KEV_2026-07-29.json --output outputs
+```
+
+成功运行后，正式产物写入`outputs/validation`、`prepared`、`tables`、`queries`、`figures`、`html`、`ml`和`manifests`。`run_manifest.json`记录输入SHA-256、运行状态、环境版本和每个产物的哈希、行数与列名。
+
+## GUI
+
+先运行`python main.py`生成机器学习产物，再启动：
+
+```powershell
+streamlit run app.py
+```
+
+GUI直接读取上传的原始JSON，支持日期、厂商、产品、Known/Unknown和CWE组合筛选，以及动态图表、详情、CSV/PNG导出和机器学习结果查看。
 
 ## 快速检查
 
 ```bash
 python scripts/verify_freeze.py
 python -m pytest tests -q
+python -m ruff check src tests main.py app.py scripts
+python -m mypy src
 python main.py --check-contracts
 ```
 

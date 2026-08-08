@@ -59,9 +59,7 @@ def run_member2(
     deadline_result = analyze_deadlines(prepared)
     ransomware_result = analyze_ransomware_status(prepared)
     vendor_result = analyze_vendors(prepared)
-    ml_result = (
-        analyze_text_clusters(prepared, candidate_k=candidate_k) if run_ml else None
-    )
+    ml_result = analyze_text_clusters(prepared, candidate_k=candidate_k) if run_ml else None
 
     specs = _load_output_specs()
     table_outputs: dict[str, pd.DataFrame] = {
@@ -89,8 +87,7 @@ def run_member2(
         )
 
     written = [
-        export_dataframe(frame, specs[name], output_root)
-        for name, frame in table_outputs.items()
+        export_dataframe(frame, specs[name], output_root) for name, frame in table_outputs.items()
     ]
 
     figure_outputs = {

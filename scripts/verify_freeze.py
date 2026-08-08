@@ -31,7 +31,10 @@ def main() -> int:
         print("Freeze verification failed:")
         print("\n".join(errors))
         return 1
-    print(f"Freeze verification passed: {len(data['files'])} contract files, version {data['version']}.")
+    print(
+        "Freeze verification passed: "
+        f"{len(data['files'])} contract files, version {data['version']}."
+    )
     return 0
 
 

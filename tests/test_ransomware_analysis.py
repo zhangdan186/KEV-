@@ -24,9 +24,9 @@ def test_ransomware_analysis_uses_official_statuses_and_year_denominators() -> N
     assert overall["record_count"].to_dict() == {"Known": 332, "Unknown": 1324}
     assert overall["share"].sum() == pytest.approx(1.0)
     assert result.by_year["total_count"].sum() == 1656
-    assert (
-        result.by_year["known_count"] + result.by_year["unknown_count"]
-    ).equals(result.by_year["total_count"])
+    assert (result.by_year["known_count"] + result.by_year["unknown_count"]).equals(
+        result.by_year["total_count"]
+    )
     assert (
         result.by_year["known_share"] + result.by_year["unknown_share"]
     ).to_numpy() == pytest.approx(1.0)

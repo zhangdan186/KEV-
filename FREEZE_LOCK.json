@@ -1,5 +1,5 @@
 {
-  "version": "1.0.1",
+  "version": "1.0.0",
   "generated_at": "2026-08-06T21:18:00+08:00",
   "files": {
     "FREEZE_MANIFEST.md": "e6a64c0b4ff6dd9e3c741df2040503f74fade78e8c3d27c516f5d780d9fcf159",
@@ -24,6 +24,6 @@
     "tests/test_interface_signatures.py": "1e0923d1f5911e928ce0610d1f8c630c0abbd37b9d92133e23c272001ff9c801",
     "tests/test_output_registry.py": "2baf32ead887d6c5b8ecdd3a8f5c37438db9c864ec7ef242bb891c9b1646bea4",
     "tests/test_document_consistency.py": "7bc2a831050ad64b9d403033f79aad17b37f4301118ae26501feac95f29fada8",
-    "scripts/verify_freeze.py": "9f0813731c7f562378457e63395d8a70f3ccfe7e6e254213e73db06b00bbb484"
+    "scripts/verify_freeze.py": "493144fd1ddbdc1cedb4e3176cffa898a88225fdf5a97f364568ad774b238b15"
   }
 }

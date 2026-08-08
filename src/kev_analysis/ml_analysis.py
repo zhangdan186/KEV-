@@ -147,9 +147,7 @@ def analyze_text_clusters(
                 "representative_cve": str(cluster.iloc[0]["cveID"]),
             }
         )
-    cluster_summary = pd.DataFrame(summary_rows).sort_values(
-        "cluster_id", kind="mergesort"
-    )
+    cluster_summary = pd.DataFrame(summary_rows).sort_values("cluster_id", kind="mergesort")
     cluster_summary = cluster_summary.reset_index(drop=True)
 
     feature_names = vectorizer.get_feature_names_out()
@@ -213,9 +211,7 @@ def _validate_candidate_k(candidate_k: tuple[int, ...], record_count: int) -> tu
     return candidates
 
 
-def _make_cluster_figure(
-    coordinates: NDArray[np.float64], labels: NDArray[np.int64]
-) -> Figure:
+def _make_cluster_figure(coordinates: NDArray[np.float64], labels: NDArray[np.int64]) -> Figure:
     figure, axis = plt.subplots(figsize=(9, 6.5))
     scatter = axis.scatter(
         coordinates[:, 0],
