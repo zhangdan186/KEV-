@@ -19,7 +19,6 @@ venv/
 /outputs/**/*
 !/outputs/**/.gitkeep
 !/outputs/README.md
-/screenshots/*.png
 
 # 报告与PPT最终导出文件可由组内另行管理
 /report/*.pdf
