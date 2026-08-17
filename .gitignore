@@ -23,3 +23,4 @@ venv/
 # 报告与PPT最终导出文件可由组内另行管理
 /report/*.pdf
 /ppt/*.pptx
+!/ppt/KEV_课程大作业_最终答辩.pptx
