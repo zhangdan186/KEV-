@@ -235,10 +235,14 @@ source .venv/bin/activate
 
 ## 报告、PPT文稿与截图
 
+- 完整报告（Markdown）：`report/FINAL_REPORT.md`
+- 最终答辩PPT：`ppt/KEV_课程大作业_最终答辩.pptx`
 - 报告总骨架：`report/REPORT_OUTLINE.md`
+- 成员一数据底座文稿：`report/member1-data-foundation.md`
 - 成员二统计与机器学习文稿：`report/member2-statistical-analysis.md`
 - 成员三CWE、查询与GUI文稿：`report/member3-cwe-query-gui.md`
 - PPT总骨架：`ppt/PPT_OUTLINE.md`
+- 成员一PPT讲稿：`ppt/member1-slide-content.md`
 - 成员二PPT讲稿：`ppt/member2-slide-content.md`
 - 成员三PPT讲稿：`ppt/member3-slide-content.md`
 - GUI截图清单：`screenshots/README.md`
